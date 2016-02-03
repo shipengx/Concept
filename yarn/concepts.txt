@@ -1,0 +1,73 @@
+YARN
+    the architectural center of enterprise hadoop
+    part of the core hadoop project, yarn is the architectural center of hadoop that allows multiple data processing engines such as 
+    interacctive sql, real-time streaming, data science and batch processing to handle data stored in a single platform, unlocking an entirely
+    new approach to analytics.
+
+    Yarn is the foundation of the new generation of hadoop and is enabling organizations everywhere to realize a modern data architecture.
+
+
+What yarn does
+yarn is the prerequisite for enterprise hadoop, providing resource management and a central platform to deliver consistent operations,
+security, and data governance tools across hadoop clusters.
+
+yarn also extends the power of hadoop to incumbent the new technologies found within the data center so that they can take advantage of cost effective,
+linear-scale storage and processing. it provides ISVs and developers a consistent framework for writing data access applicaitons that run in hadoop.
+
+    
+    batch,interactive&real-time data access
+    pig,hive,cascading,HBase accumuo,storm,spark,solr,others
+
+    yarn: data operating system (cluster resource management)
+    HDFS
+    hadoop distributed file system
+
+as its architectural center, YARN enhances a hadoop compute cluster in the following ways:
+multi-tenancy               
+    yarn allows multiple access engine(either open-source or proprietary) to use hadoop as the common standard for batch, interactive and real-time engines
+    that can simultaneously access the same data set.
+
+
+cluster utilization
+    yarn's dynamic allocation of cluster resources improves utilization over more static MapReduce rules used in early versions of Hadoop
+
+scalability
+    data center processing power continues to rapidly expand. yarn's resourceManager focuses exclusively on scheduling and keeps pace as clusters
+    expand to thousands of nodes managing petabytes of data.
+
+compatibility
+    existing MapReduce applications developed for hadoop 1 can run yarn without any disruption to existing processes that already work.
+
+
+
+
+How YARN works
+
+yarn's original purpose was to split up the two major responsiblities of the jobTracker/taskTracker into separate entities:
+
+a global ResourceManager
+a per-application ApplicationMaster
+a per-node slave NodeManager
+a per-application Container running on a NodeManager
+
+The ResourceManager and the NodeManager formed the new generic system for managing applications in a distributed manner.
+the ResourceManager is the ultimate authority that arbitrates resources among all applications in the system.
+the ApplicationMaster is a framework-specific entity that negotiates resources from the ResourceManager and works with the NodeManager(s) to
+execute and monitor the component tasks.
+
+the resourceManager has a scheduler, which is responsible for allocating resources to the various applications running in the cluster,
+according to constraints such as queue capabilities and user limits. the scheduler schedules based on the resource requirements of each application.
+
+each applicationMaster has responsiblity for negotiating appropriate resource containers from the scheduler, tracking their status, and monitoring their progress.
+from the system perspective, the ApplicaitonMaster runs as a normal container.
+
+The NodeManager is the per-machine slave, which is responsible for launching the applications' containers, monitoring their resource usage(CPU, memory, disk, network)
+and reporting the same to the ResourceManager.
+
+
+
+
+
+
+
+

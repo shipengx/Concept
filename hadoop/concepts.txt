@@ -1,0 +1,69 @@
+Hadoop archictecture
+    Hadoop framework includes following four modules:
+        hadoop common:
+            these are java libraries and utilities required by other hadoop modules.
+            these libraries provides filesystem and OS level abstractions and contains the necessary java files and scripts required to start hadoop.
+
+        hadoop yarn:
+            this is a framework for job scheduling and cluster resource management.
+
+        hadoop distributed file system (HDFS): 
+            this is a distibuted file system that provides high-throughput access to applicaiton data.
+
+        hadoop MapReduce:
+            this is Yarn-based system for parallel processing of large data sets.
+
+
+Features of HDFS:
+    it is suitable for the distributed storage and processing.
+    hadoop provides a command interface to interact with HDFS.
+    the built-in servers of namenode and datanode help users to easily check the status of cluster.
+    streaming access to file system data.
+    HDFS provides file permissions and authentication.
+
+
+
+HDFS architecture:
+    given below is the architecture of a hadoop file system.
+    HDFS architecture
+
+                            NameNode
+                                
+            client
+
+        DataNodes                   DataNodes
+        rack1                       rack2
+
+HDFS follows the master-slave architecture and it has the following elements.
+
+
+NameNode
+the namenode is the commodity hardware that contains the GNU/Linux operation system and datanode software.
+For every node (commodity hardware/System) in a cluster, there will be a datanode. These nodes manage the data storage of their system.
+    Datanodes perform read-write operations on the file systems, as per client request.
+    they also perform operaitons such as block creation, deletion and replication according to the instructions of the namenode.
+
+Block
+Generally the user data is stored in the files of HDFS. 
+The file in a file system will be divided into one or more segments and/or stored in individual data nodes.
+These file segments are called as blocks. in other words, the minimum amount of data that HDFS can read or write is called a Block.
+The default block size is 64 MB, but it can be increased as per the need to change the HDFS configuration.
+
+
+Goals of HDFS
+Fault detection and recovery: 
+Since HDFS includes a large number of commodity hardware, failure of components is frequent.
+Therefore HDFS should have mechanisms for quick and automatic fault detection and recovery.
+
+Huge datasets
+HDFS should have hundreds of nodes per cluster to manage the applications having huge datasets.
+
+Hardware at data
+A requested task can be done efficiently, when the computation takes place near the data,
+especially where huge datasets are involved, it reduces the network traffic and increases the throughput.
+
+
+
+
+
+
