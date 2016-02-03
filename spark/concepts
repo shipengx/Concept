@@ -1,0 +1,56 @@
+apache spark tutorial
+apache spark is a lightning-fast cluster computing designed for fast computation.
+it was built on top of hadoop MapReduce and it extends the MapReduce model to efficiently use more types of computations whihc includes 
+interactive Queries and Stream processing.
+
+apache spark
+apache spark is a lightning-fast cluster computing technology, designed for fast computation.
+it is based on Hadoop MapReduce and it extends the MapReduce model to efficiently use it for more types of computations, which includes interactive queries
+and stream processing.
+
+
+the main feature of spark is its in-memory cluster computing that increases the processing speed of an application.
+
+
+
+There are three ways of spark deployment as explained below:
+cluster managers
+standalone
+    spark standalone deployment means spark occupies the place on top of HDFS (Hadoop Distributed File System) and space is allocated for HDFS,
+    explicitly. 
+
+Hadoop yarn
+    hadoop yarn deployment means, simply, spark runs on yarn without any pre-installation or root access required. it helps to integrate spark into hadoop ecosystem or hadoop stack.
+    it allows other components to run on top of stack.
+
+spark in MapReduce
+    spark in mapReduce is used to launch spark job in addition to standalone deployment. With SIMR, user can start spark and uses its shell without any administrative access.
+
+
+Apache spark core
+spark core is the underlying general execution engine for spark platform that all other functionality is built upon.
+it provides in-memory computing and referencing datasets in external storage systems.
+
+Spark SQL
+spark sql is a component on top of spark core that introduces a new data abstraction called SchemaRDD, which provides support for structured and semi-structured data.
+
+Spark Streaming
+Spark streaming leverages spark core's fast scheduling capability to perform streaming analytics. 
+it ingests data in mini-batches and performs RDD (Resillient Distributed Datasets) transformations on those mini-batches of data.
+
+MLib(Machine learning library)
+MLib is a distributed machine learning framework above spark because of the distributed memory-based spark architecture.
+It is, according to benchmarks, done by the MLib developers against the alternative least squares (ALS) implementations.
+Spark MLib is nine times as fast as the hadoop disk-based version of Apache Mahout (before Mahout gained a spark interface).
+
+GraphX
+GraphX is a distributed graph-processing framework on top of Spark. 
+it provides an API for expressing graph computation that can model the user-defined graphs by using pregel abstraction API. 
+it also provides an optimized runtime for this abstraction.
+
+
+
+
+
+
+
