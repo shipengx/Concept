@@ -1,0 +1,88 @@
+This is a common question asked by many kafka users.
+the goal of this post is to explain a few important determining factors and provide a few simple formulas.
+
+More Partitions lead to higher throughput
+the first thing to understand is that a topic partition is the unit of parallelism in kafka.
+on both the producer and the broker side, writes to different partitions can be done fully in parallel.
+so expensive operations such as compression can utilize more hardware resources.
+on the consumer side, kafka always gives a single partition's data to one consumer thread.
+thus the degree of parallelism in the consumer(within a consumer group) is bounded by the number of partitions being consumed.
+
+Therefore, in general, the more partitions there are in a kafka cluster, the higher the throughput one can achieve.
+
+A rough formula for picking the number of partitions is based on throughput, you measure the throughput that you can achieve on a single 
+partition for production and consumption. let's say your target throughput is t. then you need to have at least max(t/p,t/c) partitions.
+
+
+
+
+
+
+
+
+Like many publish-subscribe messaging systems, kafka maintains feeds of messages in topics.
+Producers write data to topics and consumers read from topics.
+Since kafka is a distributed system, topics are partitioned and replciated across multiple nodes.
+
+
+Messages are simply byte arrays and the developers can use them to store any object in any format.
+with string, json and avro the most common.
+it is possible to attach a key to each message, in which case the producer guarantees that all messages with the same key 
+will arrive to the same partition. when consuming from a topic, it is possible to configure a consumer group with multiple consumers.
+Each consumer in a consumer group will read messages from a unique subset of partitions in each topic they subscribe to.
+so each message is delivered to one consumer in the group, and all messages with the same key arrive at the same consumer.
+
+
+
+what makes kafka unique is that kafka treats each topic partition as a log (an ordered set of messages).
+each message in a partition is assigned a unique offset. kafka does not attempt to track which message were read by each consumer
+and only retain unread messages; rather, kafka retains all messages for a set amount of time, and consumers are responsible to track
+their location in each log. consequently, kafka can support a large number of consumers and retain large amounts of data with very little overhead.
+
+
+
+Topics and logs
+let's first dive into the high-level abstraction kafka provides -- the topic.
+a topic is a category or feed name to which messages are published, for each topic, the kafka cluster maintains a partitioned log 
+that looks like this:
+
+
+anatomy of a topic
+
+
+partition 0  ===>>>   0123456789101112  
+
+partition 1  ===>>>   0123456789101112               writes
+
+partition 2  ===>>>   0123456789101112
+
+                     old            new
+
+
+each partition is an ordered, immutable sequence of messages that is continually appended to --- a commit log.
+the message in the partitions are each assigned a sequential id number called the offset that uniquely identifies each message within the partition.
+
+in fact the only metadata retained on a per-consumer basis is the position of the consumer in the log, called the "offset". this offset is controlled by the consumer, normally a consumer will advance its offset linearly as it reads messages, but in fact the position is controlled by the consumer and it can consume messages in any order it likes. for example, a consumer can reset to an older offset to reprocess.
+
+this combination of features means that kafka consumers are very cheap -- they can come and go without much impact on the cluster on other consumers.
+for example, you can use our command line tools to "tail" the contents of any topic without changing what is consumed by any existing consumers.
+
+
+The partitions in the log serve several purposes. First, they allow the log to scale beyond a size that will fit on a single server.
+each individual partition must fit on the servers that host it, but a topic may have many partitions so it can handle an arbitrary amount of data.
+second they act as the unit of parallelism -- more on that in a bit.
+
+Distributions
+The partitions of the log are distributed over the servers in the kafka cluster with each server handling data and requests for a share of the partitions. each partition is replicated across a configurable number of servers for fault tolerance.
+
+each partition has one server which acts as the "leader" and zero or more servers which act as "followers".
+the leader handles all read and write requests for the partition while the followers passively replicate the leader.
+if the leader fails, one of the followers will automatically become the new leader. each server acts as a leader for some of its partitions and a follower for others so load is well balanced within the cluster.
+
+
+
+
+
+
+
+

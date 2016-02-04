@@ -1,0 +1,142 @@
+Apache Kafka
+a fast, scalable, fault-tolerant messaging system
+
+Apache Kafka is a fast, scalable, durable, and fault-tolerant publish-subscribe message system.
+Kafka is often used in place of traditional message brokers like JMS and AMQP because of its higher throughput,
+reliability and replication.
+
+Kafka works in combination with Apache Storm, Apache HBase and apache spark for real-time analysis and rendering of streaming data.
+Kafka can message geospatial data from a fleet of long-haul trucks or sensor data from heating and cooling equipment in office buildings.
+Whatever the industry or use case, Kafka brokers massive message streams for low-latency analysis in Enterprise Apache Hadoop.
+
+What Kafka Does
+
+Apache kafka supports a wide range of use cases as a general-purpose messaging system for scenarios where high throughput, 
+reliable delivery, and horizontally scalability are important. Apache storm and apache HBase both work very well in combination with Kafka.
+Common use cases include:
+    stream processing
+    website activity tracking
+    metrics collection and monitoring
+    log aggregation
+
+
+Some of the import characteristics that make kafka such an attractive option for these use cases include the following:
+scalability                 distributed system scales easily with no downtime
+durability                  persists messages on disks, and provides intra-cluster replication
+reliability                 replicates the data, supports multiple subscribers, and automatically balances consumers in case of failure
+performance                 high throughput for both publishing and subscrbing, with disk structures that provide constant performance even with
+                            many terabytes of stored messages
+
+
+How kafka works
+kafka's system design can be thought of as that of a distributed commit log, where incoming data is written sequentially to disk.
+there are four main components involved in moving data in and out of kafka:
+topics
+producers
+consumers
+brokers
+
+
+producer                                                consumer
+
+producer      =>        Kakfa cluster       ->          consumer
+
+producer                                                consumer
+
+
+
+In kafka, a topic is a user-defined category to which messages are published. 
+kafka producer publish messages to one or more topics and Consumers subscribe to topics and process the published messages.
+Finally, a kafka cluster consists of one or more servers, called brokers that manage the persistence and replication of message data (i.e. the commit log).
+
+
+
+One of the keys to kafka's high performance is the simplicity of the broker's responsibilities. 
+In kafka, topics consist of one or more Partitions that are ordered, immutable sequences of messages. 
+Since write to a partition are sequential, this design greatly reduces the number of hard disk seeks (with their resulting latency)
+
+another factor contributing to kafka's performance and scalability is the fact that kafka brokers are not responsible for keeping track of what 
+messages have been consumed -- that responsibility falls on the consumer. In traditional messaging systems such as JMS, the broker bore this responsibility, severly limiting the system's ability to scale as the number of consumers increased.
+
+
+For Kafka consumers, keeping track of which messages have been consumed (processed) is simply a matter of keeping track of an offset, which is
+a sequential id number that uniquely identifies a message within a partition.
+Because kafka retains all messages on disk (for a configurable amount of time), consumers can rewind or skip to any point in a partition simply 
+by supplying an offset value. finally, this design eliminates the potential for back-pressure when consumers process messages at different rates.
+
+
+
+zookeeper stores information about cluster status and consumer offsets.
+
+
+
+
+
+apache kafka is a publish-subscribe messaging system developed by apache written in scala. 
+it is a distributed, partitioned and replicated log service.
+
+the traditional method of message transfer includes two methods:
+
+queueing: in a queue, a pool of consumers may read message from the server and each message goes to one of them 
+
+publish-subscribe: in this model, message are broadcasted to all consumers
+
+kafka caters single consumer abstraction that generalized both of the above -- the consuemr group.
+
+
+Apache kafka has following benefits above traditional messaging technique.
+
+fast: a single kafka broker can serve thousands of clients by handling megebytes of reads and writes per second
+scalable: data are partitioned and streamlined over a cluster of machines to enable larger data
+durable: Messages are persistent and is replicated within the cluster to prevent data loss
+distributed by design: it provides the fault tolerance guarantees and durability.
+
+
+In kafka cluster, broker term is used to refer Server.
+
+The maximum size of the message that kafka server can receive is 1000,000 bytes.
+
+
+
+zookeeper is an open source, high-performance co-ordination service used for distributed applications adapted by kafka.
+It is not possible to bypass zookeeper and connect straight to the kafka broker. once the zookeeper is down, it cann't serve client request.
+zookeeper is basically used to communicate between different nodes in a cluster.
+in kafka, it is used to commit offset, so if node fails in any case it can be retrieved from the previously committed offset.
+apart from this it also does other activities like leader detection, distributed synchronization, configuration management,
+identifies when a new node leaves or joins, the cluster, node status in real time, etc.
+
+
+How message is consumed by consumer in kafka
+transfer of messages in kafka is done by using sendfile API. it enables the transfer of bytes from the socket to disk via kernel space saving copies and call between kernel user back to the kernel.
+
+
+if the consumer is located in a different data center from the broker, you may refer to tune the socket buffer size to amortize the long network
+latency.
+
+during data, production to get exactly once messaging from kafka you have to follow two things avoiding duplicates during data consumption and avoid duplication during data production.
+
+in the message include a primary key (uuid or something) and de-duplicate on the consumer
+
+
+Replication of message in kafka ensures that any published message does not lose and can be consumed in case of machine error, 
+program error or more common software updates.
+
+
+as a consumer of the message, you can get the offset from a kafka broker.
+if you gaze in the simpleConsumer class, you will notice it fetches MultiFetchResponse objects that include offsets as a list.
+in addition to that, when you iterate the kafka message, you will have MessageAndOffset objects that include both, the offset and the message sent.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
