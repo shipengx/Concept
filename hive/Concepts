@@ -1,0 +1,104 @@
+Hive
+
+The hadoop ecosystem contains different sub-projects(tools) such as Sqoop, Pig, and Hive that are used to help Hadoop modules.
+
+Sqoop: it is used to import and export data to and from between HDFS and RDBMS.
+Pig: it is a procedural language platform used to develop a script for MapReduce operations.
+Hive: it is a platform used to develop SQL type scripts to do MapReduce operations.
+
+there are various ways to execute MapReduce operations:
+    the traditional approach using Java MapReduce program for structued, semi-structured, and unstructured data.
+    the scripting approach for MapReduce to process traditional and semi-structured data using Pig.
+    the Hive Query Language (HiveQL or HQL) for mapReduce to process structured data using Hive.
+
+
+What is Hive
+Hive is a data warehouse infrastructure tool to process structured data in Hadoop.
+it resides on top of hadoop to summarize big data, and makes querying and analyzing easy.
+
+Initially hive was developed by Facebook, later the apache software foundation took it up and developed it further
+as an open source under the name Apache Hive, it is used by different companies. 
+For example, amazon uses it in amazon elastic MapReduce.
+
+
+Hive is not
+a relational database
+a design for Online Transaction Processing (OLTP)
+a language for real-time queries and row-level updates
+
+Features of Hive
+it stores schema in a database and processed data into HDFS
+it is designed for OLAP
+it provides SQL type language for querying called HiveQL or HQL
+it is familiar, fast, scalable and extensible.
+
+
+The following table defines how hive interacts with Hadoop framework:
+
+1. Execute Query
+    the hive interface such as command line or Web UI sends query to Driver (any database driver such as JDBC, ODBC, etc.) to execute.
+2. Get Plan
+    the driver takes the help of query compiler that parses the query to check the syntax and query plan or gthe requirement of query.
+3. Get Metadata
+    the compiler sends metadata request to Metatore (any database)
+4. Send Metadata
+    Metastore sends metadata as a response to the compiler
+5. Send plan
+    The compiler checks the requirement and resends the plan to the driver.
+    up to here, the parsing and compiling of a query is complete.
+6. execute plan
+    the driver sends the execute plan to the execution engine.
+7. execute job
+    internally, the process of execution job is a MapReduce job. the execution engine sends the job to JobTacker, which is in NameNode and it 
+    assigns this job to TaskTracker, which is in dataNode, here, the query executes MapReduce job.
+8. Fetch results
+    the execution engine receives teh results from Data nodes.
+9. send results
+    the execution engine sends those resultant values to the driver.
+10. send results
+    the driver sends the results to Hive interfaces.
+
+
+
+Example of create database in Hive:
+CREATE DATABASE [IF NOT EXISTS] userdb;
+
+
+Example of create table in Hive:
+Create table:
+
+hive> CREATE TABLE IF NOT EXISTS employee ( eid int, name String,
+salary String, destination String)
+COMMENT ‘Employee details’
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ‘\t’
+LINES TERMINATED BY ‘\n’
+STORED AS TEXTFILE;
+
+
+
+
+HIVE partitioning
+hive organizes tables into partitions. it is a way of dividing a table into related parts based on the values of partitioned columns such as date, city, and department.
+Using partition, it is easy to query a portion of the data.
+
+tables or partitions are sub-divided into buckets, to provide extra structure to the data that may be used for more efficient querying.
+bucketing works based on the value of hash function of some column of a table.
+
+for example, a table named tab1 contains employee data such as id, name, dept, and yoj(i.e., year of joining). suppose you need to retrieve the details of all employees who joined 2012.
+A query searches the whole table for the required information. however, if you partition the employee data with the year and store it in a separate file, it reduces the query processing time,
+the following example shows how to partition a file and its data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
