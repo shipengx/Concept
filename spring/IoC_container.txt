@@ -1,0 +1,42 @@
+The spring container is at the core of the spring framework, the container will create the objects, wire them together, configure them, and manage their complete lifecycle from creation till destruction. 
+the spring container uses dependency injection(DI) to manage the components that make up an application.
+
+these objects are called spring beans which we will discuss in next chapter.
+
+
+The container gets its instructions on what objects to instantiate, configure, and assemble by reading configuration metadata provided.
+the configuration metadata can be represented either by XML, Java annotations, or java code. 
+the following diagram is a high-level view of how spring works.
+the spring IoC container makes use of Java POJO classes and configuration metadata to produce a fully configured and executable system or application.
+
+            Java POJO classes
+
+Metadata       The spring container
+
+                ready to use application
+
+
+
+ spring provides following two types of containers:
+
+ 1. spring BeanFactory container
+ this is the simplest container providing basic support for DI and defined by the org.springframework.beans.factory.BeanFactory interface.
+ the BeanFactory and related interfaces, such as BeanFactoryAware, InitializingBean, DisposableBean, are still present in spring for the purposes of backward compatibility with the large number of third-party frameworks that integrate with Spring.
+
+2. spring ApplicationContext Container
+
+this container adds more enterprise-specific functionality such as the ability to resolve textual messages from a properties fiel and the ability to publish application events to interested event listeners. this container is defined by the org.springframework.context.ApplicationContext interface.
+
+the ApplicationContext container includes all functionality of the BeanFactory container, so it is generally recommended over the BeanFactory,
+BeanFactory can still be used for light weight applications like mobile devies or applet based applications where data volume and speed is significant.
+
+
+
+
+        
+
+
+
+
+
+

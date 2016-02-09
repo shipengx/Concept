@@ -1,0 +1,35 @@
+Coupling refers to the degree of direct knowledge that one component has of another.
+Loose coupling in computing is interpreted as encapsulation vs non-encapsulation.
+
+An example of tight coupling when a dependent class contains a pointer directly to a concrete class whcih provides the required behavior.
+the dependency cann't be substituted, or its "signature" changed, without requiring a change to the depedent class.
+
+Loose coupling occurs when the dependent calss contains a pointer only to an interface, which can be implemented by one or many concrete classes.
+the dependent class' dependency is to a "contract" specified by the interface; a defined list of methods and/or properties that implementing classes must provide.
+any class that implements the interface can thus satisfy the dependency of a dependent class without having to change the class. 
+This allows for extensibility in software design;
+a new class implementing an interface can be written to replace a current dependency in some or all situations, without requiring a change to the dependent class; the new and old classes can be interchanged freely.
+    
+strong coupling does not allow this.
+
+
+Example of loose coupling, class Tester contains a pointer only to "Device_interface" which is implemented as an interface in java or a pure abstract claqss in C++.
+several concrete classes implement this interace, but class Tester has no difrect knowledge of them.
+if a new requirement pops up later to test a new kind of device, a new concrete class can easily be added without requring any modification and recompilcation of the tester class.
+
+
+
+
+
+
+With Spring framework --- Dependency Injection (DI) is a useful feature for object dependencies management,
+it is just elegant, highly flexible and facilitates maintainability, especially in large java project.
+
+The concept of object-oriented is a good design to break your system into a gorup of reusable objects.
+However, when system grows larger, especially in java project, the huge object dependencies will always tightly coupled causing objects very hard to manage or modify.
+in this scenario, you can use spring framework to act as a central module to manage all the object dependencies easily and efficiently.
+
+
+
+
+

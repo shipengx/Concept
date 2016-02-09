@@ -1,0 +1,18 @@
+SparkSQL 
+is a spark module for structured data processing. 
+Unlike the basic spark RDD API, the interfaces provided by spark SQL provide spark with more information
+about the structure of both the data and the computation being performed.
+Internally, SparkSQL uses this extra information to perform extra optimizations.
+There are several ways to interact with spark sql including sql, the dataFrame API and teh Datasets API.
+When computing a result the same execution engine is used, independent of which API/language you are using to express the computation.
+This unification means that developers can eaisly switch back and forth between the various APIs based on which provides the most natural way to express a given transformation.
+
+DataFrames
+A DataFrame is a distributed collection of data organized into named columns.
+It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimization under the hood.
+DataFrames can be constructed from a wide array of sources such as structued data files, tables in Hive, external datbases or existing RDDs.
+
+Datasets
+a Dataset is a new experimental interface added in Spark 1.6 that tries to provide the benefits of RDDs (Strong typing , ability to use powerful lambda function).
+
+

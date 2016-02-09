@@ -1,0 +1,107 @@
+package com.example;
+
+public class HelloWorld {
+    private String message;
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
+    public void getMessage() {
+        System.out.println("Your message is: " + message);
+    }
+}
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+
+    public static void main(String[] args) {
+ 
+        ApplicationContext context = new ClassPathXmlApplication("Beans.xml");
+
+        HelloWorld obj = (HelloWorld) context.getBeans("helloWorld");
+        obj.getMessage();
+    
+    }//end main
+}
+
+there are following two important points to note about the program:
+1. create application context where we used framework API ClassPathXmlApplicationContext().
+this api loads beans configuration file and eventually based on the provided API, it takes care of creating and initializing all the objects, 
+beans mentioned in the configuration file.
+
+2. get required bean using getBean() method of the created context.
+this method uses bean id to return a generic object which finally can be casted to actual object.
+once you have object, you can use this object to call any class method.
+
+
+
+
+
+Create Bean configuration file.
+
+you need to create a bean configuration file which is an XML file and acts as cement that glues the beans ie. classes together.
+this file needs to be created under the src directory as shown below 
+
+usually developers keep this file name as Beans.xml, but you are independent to choose any name you like. 
+you have to make sure that this file is available in CLASSPATH and use the same name in main application while creaing application context as shown in MainApp.java file.
+
+the Beans.xml if used to assign unique IDs to different beans and to control the creation of objects with different values without impacting nay of the spring source files. for example, using below file you can pass any value for "message" variable and so you can print different values of message without impacting HelloWorld.java and MainApp.java files. 
+    
+Let's see how it works:
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id="helloWorld" class="com.tutorialspoint.HelloWorld">
+       <property name="message" value="Hello World!"/>
+   </bean>
+
+</beans>
+
+
+
+when spring applicaiton gets loaded into memory, Framework makes use of the above configuration file to create all the beans defined and assign them a unque ID as defined in <bean> tag, you can use <property> tag to pass the values of different variables used at the time of object creation.
+
+
+Running the program:
+Once you are done with creating source and beans configuration files, you are ready for this step which is compiling and running your program.
+to do this, keep MainApp.java file tab active and use either Run option avaiable in the Eclipse IDE or use Ctrl +F11 to compiel and run your MainApp application.
+    
+congratulations, you have created your first Spring application successfully,
+you can see the flexibility of above spring applicaiton by changing the value of "message" property and keeping both the source files unchanged.
+Further, let us start doing something more interesting in next few chapters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

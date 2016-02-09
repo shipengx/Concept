@@ -1,0 +1,358 @@
+starting from spring 2.5, it became possible to configure the dependency injection using annotations.
+So instead of using xml to describe a bean wiring, you can move the bean configuration into the component class itself by using annotations on the relevant class,
+method, or field declaration.
+
+annotation injection is performed before XML injection, thus the latter configuration will override the former for properites wired through both approaches.
+
+annotation wiring is not turned on in the spring container by default, so, before we can use annotation-based wiring, we will need to enable it in our spring configuration file. 
+so consider to have following configuration file in case you want to use any annotaiton in your spring application.
+ 
+
+ <?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+   <context:annotation-config/>
+   <!-- bean definitions go here -->
+
+</beans>
+
+
+
+Once <context:annotation-config/> is configured, you can start annotating your code to indicate that spring should automatically wire values into properites, methods, and constructors. 
+
+
+let's see a few important annotations to understand how they work:
+
+@Required
+the @Required annotation applies to bean property setter methods.
+
+@Autowired
+the @Autowired annotation can apply to bean property setter methods, non-setter methods, constructor and properties.
+
+@Qualifier
+the @Qualifier annotation along with 
+
+
+
+
+
+
+Spring auto-wiring beans with @Autowired annotation
+
+in spring, you can use @Autowired annotation to auto wire bean on the setter method, constructor or a field.
+Moreoever, it can autowired property in a particular bean.
+
+note: the @Autowired annotation is auto wire the bean by matching data type.
+
+see following full example to demonstrate the use of @Autowired.
+
+
+1. Beans
+a customer bean, and declared in bean configuration file.
+
+package com.mkyong.common;
+
+public class Customer 
+{
+    //you want autowired this field.
+    private Person person;
+    
+    private int type;
+    private String action;
+    
+    //getter and setter method
+    
+}
+
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="CustomerBean" class="com.mkyong.common.Customer">
+        <property name="action" value="buy" />
+        <property name="type" value="1" />
+    </bean>
+
+    <bean id="PersonBean" class="com.mkyong.common.Person">
+        <property name="name" value="mkyong" />
+        <property name="address" value="address 123" />
+        <property name="age" value="28" />
+    </bean>
+    
+</beans>
+
+
+2. Register AutowiredAnnotationBeanPostProcessor
+to enable @Autowired, you have to register 'AutowiredAnnotationBeanPostProcessor', and you can do it in two ways:
+1. include the <context:annotation-config />
+add spring context and <context:annotation-config/> in bean configuration file.
+
+
+
+<beans 
+    //...
+    xmlns:context="http://www.springframework.org/schema/context"
+    //...
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    //...
+
+    <context:annotation-config />
+    //...
+</beans>
+
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:annotation-config />
+
+    <bean id="CustomerBean" class="com.mkyong.common.Customer">
+        <property name="action" value="buy" />
+        <property name="type" value="1" />
+    </bean>
+
+    <bean id="PersonBean" class="com.mkyong.common.Person">
+        <property name="name" value="mkyong" />
+        <property name="address" value="address ABC" />
+        <property name="age" value="29" />
+    </bean>
+    
+</beans>
+
+
+
+
+
+2. include AutowiredAnnotaitonBeanPostProcessor
+Include ‘AutowiredAnnotationBeanPostProcessor’ directly in bean configuration file.
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+<bean 
+class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    
+    <bean id="CustomerBean" class="com.mkyong.common.Customer">
+        <property name="action" value="buy" />
+        <property name="type" value="1" />
+    </bean>
+
+    <bean id="PersonBean" class="com.mkyong.common.Person">
+        <property name="name" value="mkyong" />
+        <property name="address" value="address ABC" />
+        <property name="age" value="29" />
+    </bean>
+    
+</beans>
+
+
+3. @Autowired Examples
+Now, you can autowired bean via @Autowired, and it can be applied on setter method, constructor or a field.
+
+1. @Autowired setter method.
+
+package com.mkyong.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Customer 
+{
+    private Person person;
+    private int type;
+    private String action;
+    //getter and setter methods
+    
+    @Autowired
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+}
+
+
+
+
+
+2. @Autowired constructor
+package com.mkyong.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Customer 
+{
+    private Person person;
+    private int type;
+    private String action;
+    //getter and setter methods
+    
+    @Autowired
+    public Customer(Person person) {
+        this.person = person;
+    }
+}
+
+
+3. @Autowired field
+
+package com.mkyong.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Customer 
+{
+    @Autowired
+    private Person person;
+    private int type;
+    private String action;
+    //getter and setter methods
+}
+
+the above example will autowired 'PersonBean' into customer's person property.
+
+
+run it.
+
+package com.mkyong.common;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+        ApplicationContext context = 
+          new ClassPathXmlApplicationContext(new String[] {"SpringBeans.xml"});
+        
+        Customer cust = (Customer)context.getBean("CustomerBean");
+        System.out.println(cust);
+        
+    }
+}
+
+
+output:
+Customer [action=buy, type=1, 
+person=Person [address=address 123, age=28, name=mkyong]]
+
+
+Dependency checking
+By default, the @Autowired will perform the dependency checking to make sure the property has been wired properly.
+when spring cann't find a matching bean to wire, it will throw an exception. to fix it, you can disable this checking feature by setting the "required" attribute 
+of @Autowired to false.
+
+package com.mkyong.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Customer 
+{
+    @Autowired(required=false)
+    private Person person;
+    private int type;
+    private String action;
+    //getter and setter methods
+}
+
+
+
+in the above example, if the spring can't find a matching bean, it will leave the person property unset.
+
+
+@Qualifier
+the @Qualifier annotation is used to control which bean should be autowired on a field. 
+for example, bean configuration file with two similar person beans.
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:annotation-config />
+
+    <bean id="CustomerBean" class="com.mkyong.common.Customer">
+        <property name="action" value="buy" />
+        <property name="type" value="1" />
+    </bean>
+
+    <bean id="PersonBean1" class="com.mkyong.common.Person">
+        <property name="name" value="mkyong1" />
+        <property name="address" value="address 1" />
+        <property name="age" value="28" />
+    </bean>
+    
+    <bean id="PersonBean2" class="com.mkyong.common.Person">
+        <property name="name" value="mkyong2" />
+        <property name="address" value="address 2" />
+        <property name="age" value="28" />
+    </bean>
+    
+</beans>
+
+
+
+Will spring know which bean should wire?
+to fix it, you can use @Qualifier to auto wire a particular bean, for example.
+
+package com.mkyong.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+public class Customer 
+{
+    @Autowired
+    @Qualifier("PersonBean1")
+    private Person person;
+    private int type;
+    private String action;
+    //getter and setter methods
+}
+
+
+it means, bean "personBean1" is autowired into the Customer's person property.
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

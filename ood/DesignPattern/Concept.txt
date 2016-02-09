@@ -1,0 +1,49 @@
+Singleton
+
+in software engineering, the singleton pattern is a design pattern that restricts the instantiation of a class to one object.
+this is useful when exactily one object is needed to coordinate actions across the system.
+the concept is sometimes generalized to systems that operate more efficiently when only one object exists, or that restrict the instantiation to a certain
+number of objects.
+    
+
+public class Solution {
+    
+    private static Solution instance = null;
+
+    protected Solution() {
+    }
+
+    //lazy initialization 
+    public static Solution getInstance() {
+        if (instance == null) {
+            //THREAD SAFE  
+            synchronized (Solution.class) {
+                if (instance == null) {
+                    instance = new Solution();
+                }
+            }
+        }
+        return instance;
+    }
+
+}//end solution
+
+
+public class Solution {
+
+    private static final Solution instance = new Solution();
+
+    protected Solution() {
+    }
+
+    public static Solution getInstance() {
+        return instance;
+    }
+}
+
+
+
+
+
+
+

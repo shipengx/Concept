@@ -1,0 +1,61 @@
+Bean Definition
+
+the objects that form the backbone of your application and that are managed by the spring IoC container are called beans. A bean is an object that is instantiated, assembled, and otherwise managed by a spring IoC container.
+
+These beans are created with the configuration metadata that you supply to the container, for example, in the form of XML <bean/> definitions which you have
+already seen in previous chapters.
+
+
+the bean definition contains the information called configuration metadata which is neede for the container to know the followings:
+
+    how to create a bean.
+    bean's lifecycle details.
+    bean's dependencies
+
+all the above configuration metadata translates into a set of the following properties that make up each bean definition.
+
+properties              Description
+class               this attribute is mandatory and specify the bean class to be used to create the bean.
+
+name                this attirbute specifies the bean identifier uniquely. in XML-based configuraiton metadata, you use the id and/or name attributes to specify
+                    the bean identifier.
+
+
+scope               this attribute specifies the scope of the objects created from a particular bean definition and it will be discussed in bean scope chapter.
+
+constructor-arg     this is used to inject the dependencies and will be discussed in next chapters.
+
+properties          this is used to inject the dependencies and will be discussed in next chapters.
+
+autowiring mode     this is used to inject the dependencies and will be discussed in next chapters.
+
+
+lazy-initialization mode        this tells the IoC container to create a bean instance when it is first requested, rather than at startup.
+
+initialization method           a callback to be called just after all necessary properties on the bean have been set by the container. it will be discussed in bean 
+                                life cycle chapter.
+
+destruction method          a callback to be used when the container containing the bean is destroyed. it will be discussed in bean life cycle chatper.
+
+
+
+Spring configuration metadata
+Spring IoC container is totally decoupled from the format in which this configuration metadata is actually written.
+there are following three important methods to provide configuration metadata to the spring container:
+
+    XML based configuration file
+    annotation-based configuration
+    java-based configuration
+
+
+you already have see how XML based configuration metadata provided to the container, but let use see another sample of XML based configuration file with different 
+bean definitions including lazy initialization, initialization method and destruction method.
+
+
+
+
+
+
+
+
+
