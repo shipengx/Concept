@@ -80,6 +80,120 @@ Further, let us start doing something more interesting in next few chapters.
 
 
 
+Spring --- injecting inner beans
+
+as you know that java inner classes are defined within the scope of other classes, 
+Similarly, inner beans are beans that are defined within the scope of another bean.
+Thus, a <bean/> element inside the <property/> or <constructor-arg/> elements is called inner bean and it is shown below.
+    
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <bean id="outerBean" class="...">
+      <property name="target">
+         <bean id="innerBean" class="..."/>
+      </property>
+   </bean>
+
+</beans>
+
+
+Here's an example:
+
+public class TextEditor {
+   private SpellChecker spellChecker;
+
+   // a setter method to inject the dependency.
+   public void setSpellChecker(SpellChecker spellChecker) {
+      System.out.println("Inside setSpellChecker." );
+      this.spellChecker = spellChecker;
+   }
+   
+   // a getter method to return spellChecker
+   public SpellChecker getSpellChecker() {
+      return spellChecker;
+   }
+
+   public void spellCheck() {
+      spellChecker.checkSpelling();
+   }
+}
+
+
+
+public class SpellChecker {
+   public SpellChecker(){
+      System.out.println("Inside SpellChecker constructor." );
+   }
+
+   public void checkSpelling(){
+      System.out.println("Inside checkSpelling." );
+   }   
+}
+
+
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp {
+   public static void main(String[] args) {
+      ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+
+      TextEditor te = (TextEditor) context.getBean("textEditor");
+
+      te.spellCheck();
+   }
+}
+
+
+Following is the configuration file Beans.xml which has configuration for the setter-based injection but using inner beans:
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+   <!-- Definition for textEditor bean using inner bean -->
+   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
+      <property name="spellChecker">
+         <bean id="spellChecker" class="com.tutorialspoint.SpellChecker"/>
+       </property>
+   </bean>
+
+</beans>
+
+
+
+Once you are done with creating source and bean configuration files, let us run the applciation, 
+if everything is fine with your application, this will print the following message:
+
+
+Inside SpellChecker constructor.
+Inside setSpellChecker.
+Inside checkSpelling.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
