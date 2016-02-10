@@ -1,0 +1,72 @@
+REST web services ---- messages
+
+RESTful web services make use of HTTP protocol as a medium of communication between client and server.
+A client sends a message in form of a HTTP request and server responds in form of a HTTP response.
+this technique is terms as Messaging. These messages contain message data and metadata that is information 
+about message itself. let's have a look on HTTP request and HTTP Response messages for HTTP 1.1.
+
+
+A HTTP Request has five major parts:
+    verb -- indicate HTTP methods such as GET, POST etc.
+    URL -- contains the URI, uniform resource identifier to identify the resource on server.
+    HTTP Version -- indicate HTTP version.
+    Request header -- contains metadata for HTTP Request message as key-value pairs.
+                     for example, client (or browser) type, format supported by client, format of message body, cache settings etc.
+
+    Request Body   -- Message content or Resource representation.
+
+
+
+A HTTP Response has four major parts:
+    status/response code  -- indicate server status for the requested resource. 
+                             for example 404 means resource not found and 200 means response is OK.
+    HTTP version    --  indicate HTTP version.
+    Response header -- contains metadata for the HTTP Response message as key-value pairs. For example, content length, content type, response date, server type etc.
+    Response Body -- Response message content or resource representation.
+
+
+
+Advantages of Statelessness
+Following are the benefits of statelessness in RESTful web services.
+
+web services can treat each method request independently.
+web services need not to maintain client's previous interactions. it simplifies application design.
+as HTTp is itself a statelessness protocol, RESTful web services work seamlessly with HTTP protocol.
+
+
+Disadvantages of Statelessness
+Following are the disadvantages of statelessness in RESTful web services
+
+    web services need to get extra information in each request and then interpret to get the client's state in case client interactions are to be taken care of.
+
+
+Following are the best practices of designing a RESTful web service.
+
+validation -- validate all inputs on the server. protect your server against SQL or NoSQL injection attacks.
+
+session based authentication --- use session based authentication to authenticate a user whenever a request is made to a web service method.
+
+no sensitive data in URL -- never use username, password or session token in URL, these values shoudl be passed to web service via POST method.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
