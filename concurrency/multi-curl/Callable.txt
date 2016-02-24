@@ -1,0 +1,102 @@
+Using Callable to return results from Runnables.
+
+The Runnable interface has been around since the beginning of time for the java platform.
+It allows you to define a task to be completed by a thread.
+As most people probably know already, it offers a single method run() that accepts no arguments
+and returns no values, nor can it throw any checked exceptions. if you need to get a value back from the now-completed task,
+you must use a method outside the interface and wait for some kind of notification message that the task completed.
+
+For example, the following demonstrates what you might do for just such scenario:
+
+Runnable runnable = ...;
+Thread t = new Thread(runnable);
+t.start();
+t.join();
+String value = someMethodtoGetSavedValue();
+
+Nothing is inherently wrong with this code, but it can be done differently now,
+thanks to the Callable interface introduced in J2SE 5.0. instead of having a run() method, 
+the Callable interface offers a call() method, which can return an Object or, more specifically, any type is introduced in the genericized form:
+
+public interface Callable<V> {
+    V call() throws Exception;
+}
+
+
+Because you can't pass a Callabe into a Thread to execute, you instead use the ExecutorService to execute the Callable object.
+The service accepts Callable objects to run by way of the submit() method.
+
+<T> Future <T> submit(Callabe<T> task)
+
+As the method definition shows, submitting a Callable object to the ExecutorService retrurns a Future object.
+The get() method of Future will then block until the task is completed. 
+This is the equivalent of the join() call in the first example.
+Actually, it is the equivalent of both the join() call and the get value call as get() returns the value calculated by the Callable instance.
+
+
+to demonstrate, the following example creates separate Callable instances for each word pass in on the command line and sums up their length.
+Each callable will just calculate the sum of its individual word.
+The set of Future objects are saved to acquire the calculated value from each.
+If the order of the returned values need to be preserved, a list could be used instead.
+
+
+import java.util.*;
+import java.util.concurrent.*;
+
+public class CallableExample {
+
+    public static class WordLengthCallable implements Callable {
+        private String word;
+        public WordLengthCallable(String word) {
+            this.word = word;
+        }
+        public Integer call() {
+            return Integer.valueOf(word.length());
+        }
+    }
+
+    public static void main(String args[]) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(3);
+        Set<Future<Integer>> set = new HashSet<Future<Integer>>();
+        for (String word: args) {
+            Callable<Integer> callable = new WordLengthCallable(word);
+            Future<Integer> future = pool.submit(callable);
+            set.add(future);
+        }
+        int sum = 0;
+        for (Future<Integer> future: set) {
+            sum += future.get();
+        }
+        System.out.printf("the sum of length is %s%n", sum);
+        System.exit(sum);
+    }
+
+}//end class
+
+
+The WordLengthCallable saves each word and uses the word's length as the value returned by the call() method.
+This value could take some time to generate but in this case is known immediately.
+the only requirement of call() is the value is returned at the end of the call.
+When the get() method of Future is later called, the Future will either have the value immediately if the task runs quickly,
+as in this case, or will wait until the value is done generating. 
+Multiple calls to get() will not cause the task to be rerun in the thread.
+
+
+Because the goal of the program is to calculate the sum of all word lengths,
+it doesn't matter in which order the Callable tasks finish.
+It is perfectly OK if the last task completes before the first three. The first get() call to Future will just wait for the first task in the set to complete.
+This doesn't block other tasks from running to completion separately. it is just waiting for that one thread or task to complete.
+
+
+This particular example uses a fixed-size thread pool for the ExecutorService, but any available service will do.
+
+For more information on the use of executors and thread pools, see the Executors lesson in the Java Tutorials. 
+
+
+
+
+
+
+
+
+
