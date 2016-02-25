@@ -1,0 +1,103 @@
+java.util.concurrent.Future basics
+
+Hereby I'm starting a series of articles about future concept in programming languages (also known as promises or delays) with a working title:
+back to the future. Futures are very important abstraction, even more these day than ever due to growing demand for asynchronous,
+event-driven, parallel and scalable systems.
+In the first artcle we'll discover most basic java.util.concurrent.Future<T> interface.
+
+Later on we will jump into other frameworks, libraries or even languages. Future<T> is pretty limited, but essential to understand ekhm, future parts.
+
+in a single-threaded application when you call a method it returns only when the computations are done (IOUtils.toString() comes from Apache commons IO):
+
+
+public String downloadContent(URL url) throws IOException {
+    try (InputStream input = url.openStream()) {
+        return IOUtils.toString(input, StandardCharsets.UTF_*);
+    }
+}
+
+//...
+
+final String contents = downloadContents(new URL("http://www.example.com"));
+
+downloadContents() looks harmless, but it can take even arbitrary long time to complete.
+Moreover in order to reduce latency you might want to do other, independent processing in meantime,
+while waiting for results. In the old days you would start a new Thread and somehow wait for results (shared memory, 
+locks, dreadful wait()/notify() pair, etc). With Future<T> it's much more pleasant.
+ 
+
+
+ public static Future<String>  startDownloading(URL url) {
+    //...
+ }
+
+ final Future<String> contentsFuture = startDownloading(new URL("http://www.example.com"));
+ //other computation
+ final String contents = contentsFuture.get();
+
+ we will implement startDownloading() soon. For now it's important that you understand the principles.
+
+startDownloading() does not block, waiting for external website. Instead it returns immediately, returning a lightweight Future<String> object.
+This object is a promise that String will be available in the future. Don't know when, but keep this reference and once it's there, you'll be able 
+to retrieve it using Future.get(). In other words Future is a proxy or a wrapper around an object that is not yet there. Once the asynchronous computation is done,
+you can extract it, so what API does Future provide?
+
+Future.get() is the most important method. It blocks and waits until promised result is avaialble (resolved).
+So if we really need the String, just call get() and wait. There is an overloaded version that accepts timeout so you won't wait forever if something goes wild.
+TimeoutException is thrown if waiting for too long.
+
+
+final Future<String> contentsFuture = startDownloading(new URL("http://www.example.com"));
+while (!contentsFuture.isDone()) {
+    askUserToWait();
+    doSomeComputatjionIntheMeantime();
+}
+
+contentsFuture.get();
+
+the last call to contentsFuture.get() is guaranteed to return immediately and not block because Future.isDone() returned true.
+if you follow the pattern above make sure you are not busy waiting, calling isOne() millions of time per second.
+
+
+Cancelling futures is the last aspect we have not covered yet, imagine you started some asynchronous job and you can only wait for it given amount of time.
+if it's not there after, say, 2 seconds, we give up and either propagate error or work around it. however if you are a good citizen, you should somehow tell this 
+future object: i no longer need you, forget about it. you save processing resources by not running obsolete tasks. The syntax is simple:
+
+contentsFuture.cancel(true);
+
+
+we all love cryptic, boolean parameters, aren't we? cancelling comes in two flavours. By passing false to mayInterruptedIfRunning parameter we only cancels tasks that didn't yet started, when the Future represents resutls of computation that did not even began.
+But if our Callable.call() is already in the middle, we let if finish. However if we pass true, Future.cancel() will be more aggressive, trying to interrupt already running jobs as well. How? Think about all these methods that throw infamous InterruptedException, namely Thread.sleep(), Object.wait(), Condition.wait(), and many other (including Future.get()). If you are blocking on any of such methods and someone decided to cancel your Callable, they will actually throw
+InterruptedException, signaling that someone is trying to interrupt currently running task.
+
+
+
+So we now understand what Future<T> is --- a place-holder is for something, that you will get in the future.
+it's like keys to a car that was not yet manufactured. But how do you actually obtain an instance of Future<T> in your application?
+Two most common sources are thread pools and asynchronous methods (backed by thread pools for you).
+Thus our startDownloading() method can be written to:
+
+private final ExecutorService pool = Executors.newFixedThreadPool(10);
+
+public Future<String> startDownloading(final URL url) throws IOException {
+    return pool.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                try (InputStream input = url.openStream()) {
+                    return IOUtils.toString(input, StandardCharsets.UTF_8);
+                }
+            }
+    });
+}
+
+
+a lot of syntax boilerplate, but the basic idea is simple: wrap long-running computations in Callable<String> and submit() them to a thread pool of 10 threads.
+Submitting returns some implementation of Future<String>, most likely somehow linked to your task and thread pool. 
+Obviously your task is not executed immediately. Instead it is placed in a queue which is later (maybe even much laster) polled by thread from a pool.
+Now it should be clear what these two flavours of cancel() mean -- you can always cancel task that still resides in that queue. But cancelling already running task is a bit more complex.
+
+
+
+
+
+
